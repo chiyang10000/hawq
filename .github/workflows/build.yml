@@ -55,7 +55,7 @@ jobs:
         export CFLAGS="$CFLAGS -w"
         export LDFLAGS="$LDFLAGS -Wl,-rpath,$HAWQ_TOOLCHAIN_PATH/dependency/package/lib"
 
-        ./configure --enable-debug --prefix=/tmp/hawq || cat config.log
+        ./configure --enable-coverage --enable-debug --prefix=/tmp/hawq || cat config.log
         test -f config.status
 
     - name: build hawq
@@ -120,3 +120,17 @@ jobs:
         source .github/workflows/scripts/gtest_filter_negative
         export PGDATABASE=hawq_feature_test_db
         src/test/feature/feature-test --gtest_filter=*-$GTEST_FILTER_NEGATIVE
+
+    - name: coverage
+      if: runner.os == 'Linux'
+      run: |
+        source /tmp/hawq/greenplum_path.sh
+        hawq stop cluster -a
+        source .github/workflows/scripts/toolchain.sh
+        rm -f $HAWQ_TOOLCHAIN_PATH/dependency/package/bin/gcov
+        lcov --directory . --capture --output-file coverage.info
+        lcov --list coverage.info
+        export CODECOV_TOKEN='8bd80825-400c-4272-a10c-b469050d3b8e'
+        bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+
+
