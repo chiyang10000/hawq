@@ -157,4 +157,15 @@ void HWCrc32c::updateInt64(const char *b, int len) {
 
 }  // namespace dbcommon
 
+#else // without SSE4.2
+
+namespace dbcommon {
+bool HWCrc32c::available() { return false; }
+
+void HWCrc32c::update(const void *b, int len) {
+  // dummy placeholder for linking
+}
+
+}
+
 #endif

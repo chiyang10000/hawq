@@ -19,7 +19,9 @@
 
 #include "dbcommon/function/array-function.h"
 
+#ifdef __x86_64__
 #include <x86intrin.h>
+#endif
 
 #include <cmath>
 #include <memory>

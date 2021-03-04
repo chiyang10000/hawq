@@ -17,7 +17,9 @@
  * under the License.
  */
 
+#ifdef __x86_64__
 #include <immintrin.h>
+#endif
 #include <string.h>
 
 #include <algorithm>
